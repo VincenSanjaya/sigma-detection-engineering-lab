@@ -1,0 +1,36 @@
+title: Suspicious Child Process Spawned by IIS Worker
+id: 74c0c8a3-3a42-4ac6-9b4b-333333333333
+status: experimental
+description: Detects suspicious command or scripting processes spawned by the IIS worker process w3wp.exe.
+author: Vincen Sanjaya
+date: 2026-10-07
+
+logsource:
+  category: process_creation
+  product: windows
+
+detection:
+  selection_parent:
+    ParentImage|endswith: '\w3wp.exe'
+
+  selection_child:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\rundll32.exe'
+      - '\mshta.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+
+  condition: selection_parent and selection_child
+
+falsepositives:
+  - Legitimate IIS applications that execute administrative scripts
+  - Deployment or maintenance automation
+
+level: high
+
+tags:
+  - attack.execution
+  - attack.t1059

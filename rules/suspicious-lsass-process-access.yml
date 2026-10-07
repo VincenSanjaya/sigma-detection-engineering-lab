@@ -1,0 +1,32 @@
+title: Suspicious Access to LSASS Process
+id: 4f7b9d8c-2f41-4af8-a271-222222222222
+status: experimental
+description: Detects suspicious process access to lsass.exe that may indicate credential dumping.
+author: Vincen Sanjaya
+date: 2026-10-07
+
+logsource:
+  category: process_access
+  product: windows
+
+detection:
+  selection_target:
+    TargetImage|endswith: '\lsass.exe'
+
+  filter_legitimate:
+    SourceImage|startswith:
+      - 'C:\Windows\System32\'
+      - 'C:\Windows\SysWOW64\'
+
+  condition: selection_target and not filter_legitimate
+
+falsepositives:
+  - Security products
+  - Backup software
+  - Legitimate administrative or monitoring tools
+
+level: high
+
+tags:
+  - attack.credential-access
+  - attack.t1003.001

@@ -1,0 +1,1 @@
+TargetImage="*\\lsass.exe" NOT (SourceImage IN ("C:\\Windows\\System32\\*", "C:\\Windows\\SysWOW64\\*"))
